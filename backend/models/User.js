@@ -9,7 +9,7 @@ const userSchema = new Schema({
     email:{
         type:String,
         required:true,
-        unique:true
+        // unique:true //We will manually check it
     },
     password:{
         type:String,
@@ -21,5 +21,5 @@ const userSchema = new Schema({
     }
   });
 const User=mongoose.model("user",userSchema);
-User.createIndexes();
+// User.createIndexes(); //We will manually check indexes
 module.exports=User;
