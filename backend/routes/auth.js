@@ -1,8 +1,13 @@
 const express = require("express");
 const User = require("../models/User");
 const { body, validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
+
+//Secret code for creating jwt token
+const JWT_SECRET = "kdjfkjdfkdjfkjd";
 
 // Create a user using POST "/api/auth/createuser". No login required
 router.post(
@@ -19,20 +24,37 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
     // check wether a user with this email already exists in the database
-    let user = await User.findOne({ email: req.body.email });
-    if (user) {
-      return res
-        .status(400)
-        .json({ error: "Sorry a user with this email already exists" });
-    }
     try {
+      let user = await User.findOne({ email: req.body.email });
+      if (user) {
+        return res
+          .status(400)
+          .json({ error: "Sorry a user with this email already exists" });
+      }
+
+      // Generating salt for the password
+      const salt = await bcrypt.genSalt(10);
+      // Generating hashed password with salt
+      const secPass = await bcrypt.hash(req.body.password, salt);
+      
+      //Storing the new user data in the database
       user = await User.create({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password,
+        password: secPass,
       });
-      res.json(user);
-    } catch (error) {
+
+      // data with document id created to be used to create authorization token
+      const data={
+        user:{
+            id:user.id
+        }
+      }
+      // Authorization token created with data and JWT SECRET CODE
+      const authToken=jwt.sign(data,JWT_SECRET)
+      // Authorization token sent back to the user
+      res.json(authToken); // same as res.json({authToken:authToken})
+    }catch (error) {
       console.error(error.message);
       res.status(500).send("some error occured");
     }
