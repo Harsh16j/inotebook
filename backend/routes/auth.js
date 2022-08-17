@@ -3,13 +3,14 @@ const User = require("../models/User");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const fetchuser=require("../middleware/fetchuser");
 
 const router = express.Router();
 
 //Secret code for creating jwt token
 const JWT_SECRET = "kdjfkjdfkdjfkjd";
 
-// Create a user using POST "/api/auth/createuser". No login required
+// Route 1:Create a user using POST "/api/auth/createuser". No login required
 router.post(
   "/createuser",
   body("name").isLength({ min: 1 }),
@@ -56,7 +57,7 @@ router.post(
       res.json(authToken); // same as res.json({authToken:authToken})
     } catch (error) {
       console.error(error.message);
-      res.status(500).send("Internal server errro");
+      res.status(500).send("Internal server errror");
     }
 
     //old method 2
@@ -78,7 +79,7 @@ router.post(
   }
 );
 
-// Authenticate a user using POST "/api/auth/login". No login required
+// Route 2:Authenticate a user using POST "/api/auth/login". No login required
 router.post(
   "/login",
   body("email").isEmail(),
@@ -91,7 +92,7 @@ router.post(
     }
     const { email, password } = req.body;
     try {
-      let user = await User.findOne({email:email});
+      let user = await User.findOne({ email: email });
       //If user does not exist
       if (!user) {
         return res
@@ -107,11 +108,25 @@ router.post(
       }
       // Payload is the data to be returned
       const payload = {
-        user: { user: user.id },
+        user: { id: user.id },
       };
       // Creating and sending authorization token
       const authToken = jwt.sign(payload, JWT_SECRET);
       res.json(authToken);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
+//Route 3: Get looged in User Details using POST "/api/uth/getuser". Login required
+router.post(
+  "/getuser",fetchuser,async (req, res) => {
+    try {
+      const userId = req.user.id; // req.user data stored in the fetchuser middlewear
+      const user = await User.findById(userId).select("-password"); // Password data not needed from the database
+      res.send(user);
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Internal Server Error");
