@@ -1,6 +1,7 @@
 const mongoose=require("mongoose");
 const { Schema } = mongoose;
 
+// Defining schema for Notes
 const NotesSchema = new Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId, // Foreign key 
@@ -20,7 +21,7 @@ const NotesSchema = new Schema({
     },
     date:{
         type:Date,
-        default:Date.now
+        default:Date.now //Don't write the funcion i.e. don't write Date.now(), only the name of the function is needed
     }
   });
 
