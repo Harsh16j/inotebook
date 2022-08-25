@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -13,7 +13,7 @@ const NavBar = () => {
         <Nav className="me-auto">
           <Link className="nav-link" to='/'>Home</Link>
           <Link className="nav-link" to='/about'>About</Link>
-          <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+          <NavDropdown title={`Dropdown`} id="basic-nav-dropdown">
             <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
             <NavDropdown.Item href="#action/3.2">
               Another action
@@ -24,6 +24,7 @@ const NavBar = () => {
               Separated link
             </NavDropdown.Item>
           </NavDropdown>
+          
         </Nav>
       </Navbar.Collapse>
       {/* </Container> */}
