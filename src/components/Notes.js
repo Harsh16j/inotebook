@@ -1,17 +1,20 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import NoteContext from "../context/notes/noteContext";
 import NoteItem from "./NoteItem";
 import Row from "react-bootstrap/Row";
 const Notes = () => {
   const context = useContext(NoteContext);
-  const { notes} = context;
+  const { notes, getNotes } = context;
+  useEffect(() => {
+    getNotes();
+  }, []);
   return (
-      <Row className="my-3">
-        <h2>Your Notes</h2>
-        {notes.map((note) => {
-          return <NoteItem key={note._id} note={note} />;
-        })}
-      </Row>
+    <Row className="my-3">
+      <h2>Your Notes</h2>
+      {notes.map((note) => {
+        return <NoteItem key={note._id} note={note} />;
+      })}
+    </Row>
   );
 };
 
