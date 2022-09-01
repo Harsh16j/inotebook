@@ -32,19 +32,8 @@ const NoteState = (props) => {
       },
       body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
     });
-    const json = response.json(); // response from the backend
-    // let note={
-    //   "_id": "62dfdfff92a62dfdf490be734b1289afb",
-    //   "user": "62fc8c20e4423097f81bac01",
-    //   "title": "Added",
-    //   "description": "Please wake up early23",
-    //   "tag": "personal23",
-    //   "date": "2022-08-19T13:39:46.971Z",
-    //   "__v": 0
-    // };
-    const note = json;
-    console.log(note);
-    setNotes(notes.concat(note));
+    const json =await response.json(); // response from the backend
+    setNotes(notes.concat(json));
   };
   //Delete a Note
   const deleteNote = (_id) => {
